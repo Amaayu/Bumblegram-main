@@ -7,23 +7,15 @@ var mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const session = require("express-session");
+require("dotenv").config();
+
 var app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-const mongoURI =
-  "mongodb+srv://madhvi123:aayush1234@aashu-num.jpcevue.mongodb.net/?retryWrites=true&w=majority";
-
-mongoose
-  .connect(mongoURI)
-  .then(() => {
-    console.log("Db conncted done");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+mongoose.connect(process.env.DB_HOST).then(console.log("db connected"));
 
 app.use(logger("dev"));
 app.use(express.json());
