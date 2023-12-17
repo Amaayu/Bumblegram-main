@@ -11,7 +11,7 @@
     <div class="w-[19vw] h-[19vw] bg-sky-100 rounded-full overflow-hidden">
       <img
         class="w-full h-full object-cover"
-        src="/images/uploads/<%= aashu.profileimage %> "
+        src="<%= aashu.profileimage %> "
         alt=""
       />
     </div>
@@ -42,7 +42,7 @@
   <div class="posts w-full flex  gap-1 py-2 mt-5 flex-wrap">
     <% aashu.posts.forEach(elem=>{ %>
       <div class="post w-[32.5%] h-32 bg-sky-100 overflow-hidden">
-        <img class="w-full h-full object-cover" src="/images/uploads/<%= elem.picture %>" alt="">
+        <img class="w-full h-full object-cover" src="<%= elem.picture %>" alt="">
       </div>
 
    <% }) %>

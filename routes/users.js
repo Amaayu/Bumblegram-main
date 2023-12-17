@@ -6,6 +6,12 @@ const uuid = require(`uuid`);
 const usertoautho = require(`../service/auth`);
 const upload = require("./multer");
 const session = require("express-session");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "dijzsv2tt",
+  api_key: "412351391672618",
+  api_secret: "R5PG5KnZQw1ntlpvHeJuYbspXzI",
+});
 
 // Register router
 router.post("/register", async (req, res) => {
@@ -76,25 +82,44 @@ router.post("/login", async (req, res) => {
 });
 
 //(edit or update) user profile
-router.post("/update", upload.single("filename"), async (req, res) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { username: req.body.username },
-      { username: req.body.username, name: req.body.name, bio: req.body.bio },
-      { new: true }
-    );
-    if (req.file) {
-      user.profileimage = req.file.filename;
-      console.log("File uploaded successfully!");
-    }
-    await user.save();
+router.post(
+  "/update",
+  usertoautho.authenticateUser,
+  upload.single("filename"),
+  async (req, res) => {
+    try {
+      const user = await User.findOneAndUpdate(
+        { username: req.body.username },
+        { username: req.body.username, name: req.body.name, bio: req.body.bio },
+        { new: true }
+      );
+      // Use Buffer from the uploaded file
+      if (req.file) {
+      var buffer;
+       // Upload the image to Cloudinary
+      await cloudinary.uploader.upload(req.file.path, (error, result) => {
+        if (error) {
+          console.log(error);
+          return res.status(500);
+        }
+        res.status(200);
+        buffer = result;
+        console.log(result);
+      });
+      // console.log(result);
+      
+        user.profileimage = buffer.secure_url;
+        console.log("File uploaded successfully!");
+      }
+      await user.save();
 
-    return res.redirect("/profile");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+      return res.redirect("/profile");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 //(uplode or create ) post picture
 router.post(
@@ -102,17 +127,42 @@ router.post(
   usertoautho.authenticateUser,
   upload.single("image"),
   async (req, res) => {
-    const aashu = await User.findOne({
-      username: req.session.user.username,
-    });
-    const post = await Post.create({
-      picture: req.file.filename,
-      user: aashu._id,
-      caption: req.body.caption,
-    });
-    aashu.posts.push(post._id);
-    await aashu.save();
-    res.redirect("/feed");
+    try {
+      const aashu = await User.findOne({
+        username: req.session.user.username,
+      });
+
+      // Use Buffer from the uploaded file
+      var buffer;
+
+      // Upload the image to Cloudinary
+      await cloudinary.uploader.upload(req.file.path, (error, result) => {
+        if (error) {
+          console.log(error);
+          return res.status(500);
+        }
+        res.status(200);
+        buffer = result;
+        console.log(result);
+      });
+      // console.log(result);
+
+      // Create a new post
+      const post = await Post.create({
+        picture: buffer.secure_url,
+        user: aashu._id,
+        caption: req.body.caption,
+      });
+
+      // Update user posts
+      aashu.posts.push(post._id);
+      await aashu.save();
+
+      res.redirect("/feed");
+    } catch (error) {
+      console.error(error);
+      res.redirect("/profile");
+    }
   }
 );
 module.exports = router;
