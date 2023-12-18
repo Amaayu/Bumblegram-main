@@ -41,13 +41,3 @@ module.exports = {
   authenticateUser,
 };
 
-/* try {
-    const userId = req.cookies?.userId;
-    if (getuser(userId)) {
-      next();
-    } else {
-      res.redirect("/login");
-    }
-  } catch (error) {
-    res.status(500).json({ message: " server side problem " });
-  }*/
