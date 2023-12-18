@@ -37,16 +37,27 @@ router.post("/register", async (req, res) => {
       email: req.body.email,
       password: req.body.password, // Assuming req.body.password is a string
     });
-
     // Save the new user to the database
     await newUser.save();
-    req.session.user = newUser;
+    const moona = req.session.user;
+    if (!moona) {
+      req.session.user = newUser;
+      return res.redirect("/edit");
+    } else {
+      const searchTerm = req.session.user.username;
+      const user = await User.findOne({
+        username: new RegExp(searchTerm.replace(/\s+/g, ""), "i"),
+      });
+
+      if (user) {
+        return res.redirect("/edit");
+      } else {
+        req.session.user = newUser;
+        return res.redirect("/edit");
+      }
+    }
     console.log("User created successfully");
-    const userpop = uuid.v4();
-    res.cookie("userId", userpop);
-    usertoautho.setuser(userpop, newUser);
     // Redirect to the user's profile page
-    return res.redirect("/edit");
   } catch (error) {
     console.error(error);
 
@@ -72,11 +83,23 @@ router.post("/login", async (req, res) => {
       console.log(user, "nhi mila");
       return res.redirect("/login");
     }
-    req.session.user = user;
-    const userpop = uuid.v4();
-    res.cookie("userId", userpop);
-    usertoautho.setuser(userpop, user);
-    res.redirect("/feed");
+    const moona = req.session.user;
+    if (!moona) {
+      req.session.user = user;
+      return res.redirect("/feed");
+    } else {
+      const searchTerm = req.session.user.username;
+      const user = await User.findOne({
+        username: new RegExp(searchTerm.replace(/\s+/g, ""), "i"),
+      });
+
+      if (user) {
+        return res.redirect("/feed");
+      } else {
+        req.session.user = user;
+        return res.redirect("/feed");
+      }
+    }
   } catch (error) {
     res.status(500).json({ message: "sory page not found " });
   }
@@ -96,19 +119,19 @@ router.post(
       );
       // Use Buffer from the uploaded file
       if (req.file) {
-      var buffer;
-       // Upload the image to Cloudinary
-      await cloudinary.uploader.upload(req.file.path, (error, result) => {
-        if (error) {
-          console.log(error);
-          return res.status(500);
-        }
-        res.status(200);
-        buffer = result;
-        console.log(result);
-      });
-      // console.log(result);
-      
+        var buffer;
+        // Upload the image to Cloudinary
+        await cloudinary.uploader.upload(req.file.path, (error, result) => {
+          if (error) {
+            console.log(error);
+            return res.status(500);
+          }
+          res.status(200);
+          buffer = result;
+          console.log(result);
+        });
+        // console.log(result);
+
         user.profileimage = buffer.secure_url;
         console.log("File uploaded successfully!");
       }

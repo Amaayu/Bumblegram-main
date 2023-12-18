@@ -7,6 +7,7 @@ var mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const morgan = require("morgan"); // For logging HTTP requests
 const bodyParser = require("body-parser");
 require("dotenv").config();
@@ -20,13 +21,15 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-const username = process.env.DB_NAME
-const password = process.env.DB_PASSWORD
-const dataname = process.env.DB_DATABASE_NAME
+const username = process.env.DB_NAME;
+const password = process.env.DB_PASSWORD;
+const dataname = process.env.DB_DATABASE_NAME;
 
 // Connect to the database
 mongoose
-  .connect(`mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`)
+  .connect(
+    `mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`
+  )
   .then(() => {
     console.log("DB connected");
   })
@@ -41,7 +44,15 @@ app.use(logger("dev"));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-  session({ secret: " lolo poop jay", resave: false, saveUninitialized: true })
+  session({
+    secret: " lolo poop jay",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: `mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`,
+      ttl: 14 * 24 * 60 * 60, // session TTL (optional)
+    }),
+  })
 );
 
 app.use("/", indexRouter);
