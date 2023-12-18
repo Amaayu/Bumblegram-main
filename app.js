@@ -22,7 +22,7 @@ app.set("view engine", "ejs");
 
 // Connect to the database
 mongoose
-  .connect(process.env.DB_HOST)
+  .connect("mongodb+srv://madhvi123:aayush1234@aashu-num.jpcevue.mongodb.net/?retryWrites=true&w=majority")
   .then(() => {
     console.log("DB connected");
   })
