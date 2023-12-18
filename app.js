@@ -7,19 +7,33 @@ var mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const session = require("express-session");
+const morgan = require("morgan"); // For logging HTTP requests
+const bodyParser = require("body-parser");
+require("dotenv").config();
+const errorHandler = require("errorhandler");
+
 require("dotenv").config();
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-mongoose.connect(process.env.DB_HOST).then(console.log("db connected"));
+// Connect to the database
+mongoose
+  .connect(process.env.DB_HOST)
+  .then(() => {
+    console.log("DB connected");
+  })
+  .catch((error) => {
+    console.error("Error connecting to the database:", error);
+  });
 
+app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -43,6 +57,11 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 module.exports = app;
