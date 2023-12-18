@@ -6,12 +6,66 @@ const usertoautho = require(`../service/auth`);
 const user = require("../models/user");
 const { post } = require("./users");
 
-router.get("/", function (req, res) {
-  res.render("index", { footer: false });
+router.get("/", async function (req, res) {
+  try {
+    // Check if user is already in session
+    const currentUser = req.session.user;
+
+    if (!currentUser) {
+      // If user is not in session, assign and redirect to /feed 
+      return  res.render("index", { footer: false });
+    } else {
+      // If user is in session, check if the user exists in the database
+      const searchTerm = currentUser.username;
+      const userInDatabase = await User.findOne({
+        username: new RegExp(searchTerm.replace(/\s+/g, ""), "i"),
+      });
+
+      if (userInDatabase) {
+        // If the user exists in the database, redirect to /feed
+        return res.redirect("/feed");
+      } else {
+        // If the user doesn't exist in the database, update session user and redirect to /feed
+        return  res.render("index", { footer: false });
+      }
+    }
+  } catch (error) {
+    console.error("Error in / route:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+
+  // This line will never be reached. The response has already been sent in the if/else blocks.
+  // If you want to render a view, you might want to move it inside the corresponding blocks.
+  // res.render("index", { footer: false });
 });
 
-router.get("/login", function (req, res) {
-  res.render("login", { footer: false });
+router.get("/login", async function (req, res) {
+  try {
+    // Check if user is already in session
+    const currentUser = req.session.user;
+
+    if (!currentUser) {
+      // If user is not in session, assign and redirect to /feed 
+      return res.render("login", { footer: false });
+    } else {
+      // If user is in session, check if the user exists in the database
+      const searchTerm = currentUser.username;
+      const userInDatabase = await User.findOne({
+        username: new RegExp(searchTerm.replace(/\s+/g, ""), "i"),
+      });
+
+      if (userInDatabase) {
+        // If the user exists in the database, redirect to /feed
+        return res.redirect("/feed");
+      } else {
+        // If the user doesn't exist in the database, update session user and redirect to /feed
+        return  res.render("login", { footer: false });
+      }
+    }
+  } catch (error) {
+    console.error("Error in / route:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 router.get("/feed", usertoautho.authenticateUser, async function (req, res) {
