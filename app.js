@@ -20,9 +20,13 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+const username = process.env.DB_NAME
+const password = process.env.DB_PASSWORD
+const dataname = process.env.DB_DATABASE_NAME
+
 // Connect to the database
 mongoose
-  .connect("mongodb+srv://madhvi123:aayush1234@aashu-num.jpcevue.mongodb.net/?retryWrites=true&w=majority")
+  .connect(`mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`)
   .then(() => {
     console.log("DB connected");
   })
