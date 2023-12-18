@@ -54,7 +54,7 @@ app.use(
     }),
   })
 );
-
+// midelwares
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
