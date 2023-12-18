@@ -8,10 +8,9 @@ const upload = require("./multer");
 const session = require("express-session");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
-// api_key: process.env.CLOUDINARY_API_KEY
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: "412351391672618",
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
