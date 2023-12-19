@@ -139,4 +139,30 @@ router.get("/username/:username", usertoautho.authenticateUser, async function (
     });
   res.json(users);
 });
+
+router.get("/logout", async function (req, res) {
+  try {
+    // Check if user is in session
+    const currentUser = req.session.user;
+
+    if (currentUser) {
+      // If user is in session, clear the user session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+          return res.status(500).json({ message: "Internal Server Error" });
+        }
+
+        // Redirect to the login page after clearing the session
+        return res.redirect("/login");
+      });
+    } else {
+      // If user is not in session, redirect to the login page
+      return res.redirect("/login");
+    }
+  } catch (error) {
+    console.error("Error in /logout route:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 module.exports = router;
