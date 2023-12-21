@@ -4,7 +4,7 @@ services:
   nodejs:
     build:
       context: .
-      dockerfile: Dockerfile.nodejs
+      dockerfile: Dockerfile
     ports:
       - "8888:8888"
     networks:
@@ -13,7 +13,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     networks:
