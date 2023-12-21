@@ -2,14 +2,18 @@ version: '3.8'
 
 services:
   nodejs:
-    image: your-nodejs-image
+    build:
+      context: .
+      dockerfile: Dockerfile.nodejs
     ports:
       - "8888:8888"
     networks:
       - my-network
 
   nginx:
-    image: your-nginx-image
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
     networks:
