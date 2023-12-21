@@ -5,5 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - my-network
+
+  nginx:
+    image: nginx:latest
+    networks:
+      - my-network
     ports:
       - "8080:80"
+
+networks:
+  my-network:
