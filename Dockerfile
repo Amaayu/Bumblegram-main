@@ -12,6 +12,9 @@ RUN npm start
 # Stage 2: Create a lightweight image with Nginx to serve the built app
 FROM nginx:latest
 
+# Remove the default Nginx configuration
+RUN rm /etc/nginx/nginx.conf
+
 COPY nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /usr/share/nginx/html
