@@ -16,7 +16,7 @@ FROM nginx
 COPY ./default.conf /etc/nginx/conf.d/
 
 # Expose port 80 from the Nginx stage (optional, depends on your requirements)
-EXPOSE 80
+EXPOSE 2023
 
 # Set the entry point to start Nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
