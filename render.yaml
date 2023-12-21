@@ -1,0 +1,20 @@
+services:
+- name: nodejs
+  dockerfile: Dockerfile.nodejs
+  envVars:
+  - key: PORT
+    value: "8888"
+  healthCheckPath: /
+  github:
+    branch: main
+    buildCommand: docker-compose build nodejs
+    publishCommand: docker-compose up -d
+  staticPublishPath: /usr/src/app/dist
+  env: 
+    - node:16
+
+- name: nginx
+  dockerfile: Dockerfile.nginx
+  healthCheckPath: /
+  staticPublishPath: /usr/share/nginx/html
+  env: latest
