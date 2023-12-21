@@ -1,20 +1,24 @@
-# Use an official Node.js runtime as a parent image
-FROM node:16
+# Stage 1: Build the Node.js application
+FROM node:16 as builder
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
-
-# Install app dependencies
 RUN npm install
 
-# Bundle app source
 COPY . .
+RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 5500
+# Stage 2: Create a lightweight image with Nginx to serve the built app
+FROM nginx:latest
 
-# Command to run the application
-ENTRYPOINT [ "npm", "start" ]
+WORKDIR /usr/share/nginx/html
+
+# Copy the built app from the previous stage
+COPY --from=builder /app/dist .
+
+# Expose the port Nginx will run on
+EXPOSE 80
+
+# Command to start Nginx
+ENTRYPOINT  ["nginx", "-g", "daemon off;"]
