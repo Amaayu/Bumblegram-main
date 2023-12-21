@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
+EXPOSE 5500
 
 RUN npm start
 
