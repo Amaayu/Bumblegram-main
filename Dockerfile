@@ -7,6 +7,9 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+EXPOSE 5500
+
 RUN npm start
 
 # Stage 2: Create a lightweight image with Nginx to serve the built app
