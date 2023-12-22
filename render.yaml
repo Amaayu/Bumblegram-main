@@ -1,26 +1,25 @@
 version: '3'
 
 services:
-    nodejs-app:
-        build:
-          context: .
-        container_name: nodejsserver
-        hostname: nodejsserver
-        ports:
-            - "8888:8888" 
-        networks:
-            - example-net  
-    nginx:
-        build:
-          context: .
-        container_name: nginx
-        hostname: nginx
-        ports:
-            - "80:80" 
-        depends_on:
-            - nodejs-app
-        networks:
-            - example-net
+  nodejs-app:
+    build: .
+    container_name: nodejsserver
+    hostname: nodejsserver
+    ports:
+      - "8888:8888"
+    networks:
+      - example-net
+
+  nginx:
+    build: .
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nodejs-app
+    networks:
+      - example-net
 
 networks:
   example-net:
