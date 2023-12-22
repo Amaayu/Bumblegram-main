@@ -1,5 +1,5 @@
 # Step 1: Node.js image
-FROM node:14
+FROM node:16
 
 WORKDIR /usr/src/app
 
@@ -11,10 +11,5 @@ COPY . .
 
 EXPOSE 8888
 
-CMD [ "node", "app.js" ]
+ENTRYPOINT [ "node", "app.js" ]
 
-# Step 2: Nginx image
-FROM nginx
-
-COPY default.conf /etc/nginx/conf.d/
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
