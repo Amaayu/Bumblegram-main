@@ -1,7 +1,7 @@
-version: '3.8'
+version: '3'
 
 services:
-  localhost:
+  nodejs-app:
     build: .
     container_name: nodejsserver
     hostname: nodejsserver
@@ -17,7 +17,7 @@ services:
     ports:
       - "2023:80"
     depends_on:
-      - localhost
+      - nodejs-app
     networks:
       - example-net
 
