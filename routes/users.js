@@ -9,16 +9,10 @@ const session = require("express-session");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 cloudinary.config({
-  cloud_name: `dijzsv2tt`,
-  api_key: `412351391672618`,
-  api_secret: `R5PG5KnZQw1ntlpvHeJuYbspXzI`,
-});
-
-/*
- cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-*/ 
+});
 
 // Register router
 router.post("/register", async (req, res) => {
