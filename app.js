@@ -28,7 +28,7 @@ const dataname = process.env.DB_DATABASE_NAME;
 // Connect to the database
 mongoose
   .connect(
-    ` mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`
+    `mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`
   )
   .then(() => {
     console.log("DB connected");
@@ -49,7 +49,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: `mongodb+srv://madhvi123:aayush1234@aashu-num.jpcevue.mongodb.net/?retryWrites=true&w=majority`,
+      mongoUrl: `mongodb+srv://${username}:${password}@${dataname}.jpcevue.mongodb.net/?retryWrites=true&w=majority`,
       ttl: 14 * 24 * 60 * 60, // session TTL (optional)
     }),
   })
